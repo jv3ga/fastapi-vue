@@ -5,4 +5,5 @@ docker rm -f $(docker ps -a -q)
 # Delete all volumes using the following command:
 docker volume rm $(docker volume ls -q)
 # Restart the containers using the following command:
-docker-compose up -d
+docker-compose up -d --build
+docker-compose exec backend aerich upgrade
