@@ -13,13 +13,18 @@
         <label for="password" class="form-label">Password:</label>
         <input type="password" name="password" v-model="user.password" class="form-control" />
       </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Confirm password:</label>
+        <input type="password" name="password" v-model="confirmPassword" class="form-control" />
+      </div>     
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </section>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Register',
   data() {
@@ -27,18 +32,23 @@ export default {
       user: {
         username: '',
         full_name: '',
-        password: '',
+        password: '',        
       },
+      confirmPassword: '',
     };
   },
   methods: {
     ...mapActions(['register']),
-    async submit() {
-      try {
-        await this.register(this.user);
-        this.$router.push('/dashboard');
-      } catch (error) {
-        throw 'Username already exists. Please try again.';
+    async submit() {      
+      if (this.user.password != this.confirmPassword) {
+        alert('The password and confirmation are differents.')
+      } else {
+        try {
+          await this.register(this.user)
+          this.$router.push('/dashboard')
+        } catch (error) {
+          throw 'Username already exists. Please try again.'
+        }
       }
     },
   },
