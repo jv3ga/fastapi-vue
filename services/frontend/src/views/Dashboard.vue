@@ -1,56 +1,28 @@
 <template>
-  <div>
+  <div align="center">
     <section>
-      <h1>Add new note</h1>
-      <hr/><br/>
+      <h1>Rock-Paper-Scissors</h1>
+      <br/>
 
-      <form @submit.prevent="submit">
-        <div class="mb-3">
-          <label for="title" class="form-label">Title:</label>
-          <input type="text" name="title" v-model="form.title" class="form-control" />
-        </div>
-        <div class="mb-3">
-          <label for="content" class="form-label">Content:</label>
-          <textarea
-            name="content"
-            v-model="form.content"
-            class="form-control"
-          ></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-    </section>
-
-    <br/><br/>
-
-    <section>
-      <h1>Notes</h1>
-      <hr/><br/>
-
-      <div v-if="notes.length">
-        <div v-for="note in notes" :key="note.id" class="notes">
-          <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <ul>
-                <li><strong>Note Title:</strong> {{ note.title }}</li>
-                <li><strong>Author:</strong> {{ note.author.username }}</li>
-                <li><router-link :to="{name: 'Note', params:{id: note.id}}">View</router-link></li>
-              </ul>
-            </div>
-          </div>
-          <br/>
-        </div>
-      </div>
-
-      <div v-else>
-        <p>Nothing to see. Check back later.</p>
-      </div>
+      <p class="text-primary"> Rock beats scissors, scissors beat paper, paper beats rock. </p>
+      <br/>
+      <p>
+        Race to 5 wins. Bonus points for fewer matches to reach 5
+        wins using the formula 10 - # of matches. If computer gets 5
+        wins first, you get zero points.
+      </p>
+      <h2>Good luck {{ user }}!</h2>
+      <br/>
+      <button 
+      class="btn btn-success"
+      @click="startGame"
+      >Press to start
+      </button>
     </section>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
 export default {
   name: 'Dashboard',
   data() {
@@ -59,18 +31,15 @@ export default {
         title: '',
         content: '',
       },
+      user: null,
     };
   },
   created: function() {
-    return this.$store.dispatch('getNotes');
-  },
-  computed: {
-    ...mapGetters({ notes: 'stateNotes'}),
+    this.user = this.$store.getters.stateUser.full_name
   },
   methods: {
-    ...mapActions(['createNote']),
-    async submit() {
-      await this.createNote(this.form);
+    startGame () {
+      console.log('start')
     },
   },
 };
