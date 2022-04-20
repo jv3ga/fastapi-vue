@@ -6,13 +6,15 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import Vuetify from 'vuetify'
+import vuetify from '@/plugins/vuetify'
 import 'vuetify/dist/vuetify.min.css'
+export default new Vuetify(opts)
 
 Vue.use(Vuetify)
 
 const opts = {}
 
-export default new Vuetify(opts)
+
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = 'http://localhost:5000/';  // the FastAPI backend
@@ -33,5 +35,6 @@ axios.interceptors.response.use(undefined, function (error) {
 new Vue({
   router,
   store,
+  vuetify,
   render: h => h(App)
 }).$mount('#app');

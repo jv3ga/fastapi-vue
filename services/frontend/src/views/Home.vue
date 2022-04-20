@@ -1,6 +1,5 @@
 <template>
-  <section>
-    <p>This site is built with FastAPI and Vue.</p>
+  <section>   
 
     <div v-if="isLoggedIn" id="logout">
       <p id="logout">Click <a href="/dashboard">here</a> to view all notes.</p>
@@ -10,6 +9,7 @@
       <span> or </span>
       <span><a href="/login">Log In</a></span>
     </p>
+    <p>This site is built with FastAPI, Vue and love</p>
   </section>
 </template>
 <script>
