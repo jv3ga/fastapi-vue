@@ -41,7 +41,6 @@
             </tr>            
           </table>
           <div :disabled="finished">
-            <h1> {{finished}} </h1>
             <p>Computer's picks: <strong>{{ computedSeletced }} </strong></p>
             <button :disabled="finished" id="rock" @click="onChoice">rock</button>
             <button :disabled="finished" id="paper" @click="onChoice">paper</button>
@@ -53,13 +52,14 @@
         
         
         <div v-if="finished">
-          <div>{{ result }}</div>
-          <button 
+          <h1>{{ result }}</h1>
+          <h2> You got {{ totalPoints }} points </h2>          
+        </div>
+        <button 
           class="btn btn-success"
           @click="startGame"
           >Start again
-          </button>
-        </div>
+        </button>
       </div>
     
     </section>
@@ -89,6 +89,7 @@ export default {
       finished: false,
       resultMessage: "",
       result: "",
+      totalPoints: 0,
     };
   },
   created: function() {
@@ -111,22 +112,22 @@ export default {
       const computerChoiceIndex = Math.floor(Math.random() * choices.length)
       this.computedSeletced = choices[computerChoiceIndex]
       this.selected = e.currentTarget.id
-      this.game(this.computedSeletced, this.selected)      
       this.gamesPlayed ++
-      if (this.gamesPlayed == 10){
-        this.finished = true
-      }
+      this.game(this.computedSeletced, this.selected)      
     },    
     gameResult (){
-      if (this.playerWon >= 5) {
-        this.result = "You are the winner!!"
-        this.finished = true
-      } else if (this.computerWon == 5) {
+      if (this.computerWon == 5) {
+        this.totalPoints = 0
         this.result = "You lost this round"
+        this.finished = true
+      } else if (this.playerWon == 5) {
+        this.result = "You are the winner!!"
+        this.totalPoints = 10 - this.gamesPlayed
         this.finished = true
       }      
     },
     game(computedSeletced, selected) {
+      console.log(computedSeletced, selected)
       if (computedSeletced === selected) {
         this.resultMessage = "it's a tie"
       } else {
@@ -136,10 +137,13 @@ export default {
           (computedSeletced === "scissors" && selected === "paper")
         ) {
           this.computerWon ++
+          console.log(this.resultMessage)
           this.resultMessage = "Computer won"
-        }
-        this.playerWon ++
-        this.resultMessage == "You won!"
+          console.log(this.resultMessage)
+        } else {
+          this.playerWon ++
+          this.resultMessage == "You won!"
+        }        
       }
       this.gameResult();
     },
