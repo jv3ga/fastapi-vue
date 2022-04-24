@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 const choices = ["rock", "paper", "scissors"];
 export default {
   name: 'Dashboard',
@@ -95,10 +96,10 @@ export default {
   created: function() {
     this.user = this.$store.getters.stateUser.full_name
   },
-  watch: {
-  },
-  methods: {
+  methods: {    
+    ...mapActions(['updateNote']),
     startGame () {
+      console.log(this.$store.getters.stateUser.id)
       this.gamesPlayed = 1
       this.playerWon = 0
       this.computerWon = 0
@@ -114,7 +115,19 @@ export default {
       this.selected = e.currentTarget.id
       this.gamesPlayed ++
       this.game(this.computedSeletced, this.selected)      
-    },    
+    },
+    async recordResult (totalPoints) {      
+      // i should add poinst
+      try {
+        let result = {
+          userid: this.$store.getters.stateUser.id,
+          points: totalPoints,
+        };
+        await this.updateNote(result);        
+      } catch (error) {
+        console.log(error);
+      }
+    },
     gameResult (){
       if (this.computerWon == 5) {
         this.totalPoints = 0
@@ -124,10 +137,12 @@ export default {
         this.result = "You are the winner!!"
         this.totalPoints = 10 - this.gamesPlayed
         this.finished = true
-      }      
+      }
+      if (this.finished) {
+        this.recordResult(this.totalPoint)
+      }
     },
     game(computedSeletced, selected) {
-      console.log(computedSeletced, selected)
       if (computedSeletced === selected) {
         this.resultMessage = "it's a tie"
       } else {
