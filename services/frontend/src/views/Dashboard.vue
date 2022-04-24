@@ -29,18 +29,36 @@
       >
       
         <h1>Round # {{ gamesPlayed }}</h1>
-        <div v-if="!finished">
-          <p>Computer's picks: <strong>{{ computedSeletced }} </strong></p>
-          <button id="rock" @click="onChoice">rock</button>
-          <button id="paper" @click="onChoice">paper</button>
-          <button id="scissors" @click="onChoice">scissors</button>
-          <p>your choice: {{ selected }}</p>
-
-          <h2> {{ resultMessage }} </h2>
-        </div>
         
-        <div v-else>
+          <table>
+            <tr>
+              <th>Computer</th>
+              <th>{{ user }}</th>              
+            </tr>
+            <tr>
+              <td>{{ computerWon }}</td>
+              <td>{{ playerWon }}</td>
+            </tr>            
+          </table>
+          <div :disabled="finished">
+            <h1> {{finished}} </h1>
+            <p>Computer's picks: <strong>{{ computedSeletced }} </strong></p>
+            <button :disabled="finished" id="rock" @click="onChoice">rock</button>
+            <button :disabled="finished" id="paper" @click="onChoice">paper</button>
+            <button :disabled="finished" id="scissors" @click="onChoice">scissors</button>
+            <p>your choice: {{ selected }}</p>
+
+            <h2> {{ resultMessage }} </h2>
+          </div>
+        
+        
+        <div v-if="finished">
           <div>{{ result }}</div>
+          <button 
+          class="btn btn-success"
+          @click="startGame"
+          >Start again
+          </button>
         </div>
       </div>
     
@@ -64,53 +82,66 @@ export default {
       },
       user: null,
       gamesPlayed: 0,
+      playerWon: 0,
+      computerWon: 0,
       selected: "",
-      computedSeletced: "",
+      computedSeletced: "",      
       finished: false,
       resultMessage: "",
+      result: "",
     };
   },
   created: function() {
     this.user = this.$store.getters.stateUser.full_name
   },
-  computed: {    
+  watch: {
   },
   methods: {
     startGame () {
       this.gamesPlayed = 1
+      this.playerWon = 0
+      this.computerWon = 0
+      this.selected = ""
+      this.computedSeletced = ""
+      this.finished = false
+      this.resultMessage = ""
+      this.result = ""
     },
-    onChoice(e) {
-      const computerChoiceIndex = Math.floor(Math.random() * choices.length);
-      this.computedSeletced = choices[computerChoiceIndex];
-      this.selected = e.currentTarget.id;
+    onChoice (e) {
+      const computerChoiceIndex = Math.floor(Math.random() * choices.length)
+      this.computedSeletced = choices[computerChoiceIndex]
+      this.selected = e.currentTarget.id
+      this.game(this.computedSeletced, this.selected)      
       this.gamesPlayed ++
-      if (this.gamesPlayed === 10){
+      if (this.gamesPlayed == 10){
         this.finished = true
-      } else {
-        this.resultMessage = this.game(this.computedSeletced, this.selected);
       }
-    },
-    play() {      
-      if (!this.selected) {        
-        return;
-      }
-      const computerChoiceIndex = Math.floor(Math.random() * choices.length);
-      this.computedSeletced = choices[computerChoiceIndex];
+    },    
+    gameResult (){
+      if (this.playerWon >= 5) {
+        this.result = "You are the winner!!"
+        this.finished = true
+      } else if (this.computerWon == 5) {
+        this.result = "You lost this round"
+        this.finished = true
+      }      
     },
     game(computedSeletced, selected) {
-
       if (computedSeletced === selected) {
-        return "it's a tie"
+        this.resultMessage = "it's a tie"
       } else {
         if (
           (computedSeletced === "rock" && selected === "scissors") ||
           (computedSeletced === "paper" && selected === "rock") ||
           (computedSeletced === "scissors" && selected === "paper")
         ) {
-          return "Computer won"
+          this.computerWon ++
+          this.resultMessage = "Computer won"
         }
-        return "You won!"
+        this.playerWon ++
+        this.resultMessage == "You won!"
       }
+      this.gameResult();
     },
   },
 };
