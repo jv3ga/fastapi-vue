@@ -21,3 +21,13 @@ class Notes(models.Model):
 
     def __str__(self):
         return f"{self.title}, {self.author_id} on {self.created_at}"
+
+class Scores(models.Model):
+    id = fields.IntField(pk=True)
+    points = fields.IntField()
+    user = fields.ForeignKeyField("models.Users", related_name="score")
+    created_at = fields.DatetimeField(auto_now_add=True)
+    modified_at = fields.DatetimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user} has {self.points} points"

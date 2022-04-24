@@ -71,3 +71,17 @@ async def delete_note(
     note_id: int, current_user: UserOutSchema = Depends(get_current_user)
 ):
     return await crud.delete_note(note_id, current_user)
+
+@router.put("/score/add/{user_id}")
+async def score_add(user_id: int, points: int):
+    # check if the user has scoreboard, create if not exists
+    note = {"author": user_id}
+    if not note:
+        note = {
+            "author": user_id,
+            "points": points
+        }
+        crud.create_note(note, user_id)
+    # if exists add score
+    return await crud.update_note(user_id, points, user_id)
+
