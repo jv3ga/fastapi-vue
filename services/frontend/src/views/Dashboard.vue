@@ -22,24 +22,33 @@
         @click="startGame"
         >Press to start
         </button>
-        <font-awesome-icon icon="fa-solid fa-user-secret" />
+        
       </div>
       <div
       v-else
       >
-      <h1>Round # {{ gamesPlayed }}</h1>
-      <div>
-        <p>Computer's picks: {{ computedSeletced }}</p>
-        <button @click="selected = 'rock'">rock</button>
-        <button @click="selected = 'paper'">paper</button>
-        <button @click="selected = 'scissors'">scissors</button>
-      </div>
-      <button @click="play">play</button>
-      <p>your choice: {{ selected }}</p>
-      <div>{{ result }}</div>
+      
+        <h1>Round # {{ gamesPlayed }}</h1>
+        <div v-if="!finished">
+          <p>Computer's picks: <strong>{{ computedSeletced }} </strong></p>
+          <button id="rock" @click="onChoice">rock</button>
+          <button id="paper" @click="onChoice">paper</button>
+          <button id="scissors" @click="onChoice">scissors</button>
+          <p>your choice: {{ selected }}</p>
+
+          <h2> {{ resultMessage }} </h2>
+        </div>
+        
+        <div v-else>
+          <div>{{ result }}</div>
+        </div>
       </div>
     
     </section>
+
+
+    
+
   </div>
 </template>
 
@@ -57,38 +66,51 @@ export default {
       gamesPlayed: 0,
       selected: "",
       computedSeletced: "",
+      finished: false,
+      resultMessage: "",
     };
   },
   created: function() {
     this.user = this.$store.getters.stateUser.full_name
   },
-  computed: {
-    result() {
-      const { computedSeletced, selected } = this;
+  computed: {    
+  },
+  methods: {
+    startGame () {
+      this.gamesPlayed = 1
+    },
+    onChoice(e) {
+      const computerChoiceIndex = Math.floor(Math.random() * choices.length);
+      this.computedSeletced = choices[computerChoiceIndex];
+      this.selected = e.currentTarget.id;
+      this.gamesPlayed ++
+      if (this.gamesPlayed === 10){
+        this.finished = true
+      } else {
+        this.resultMessage = this.game(this.computedSeletced, this.selected);
+      }
+    },
+    play() {      
+      if (!this.selected) {        
+        return;
+      }
+      const computerChoiceIndex = Math.floor(Math.random() * choices.length);
+      this.computedSeletced = choices[computerChoiceIndex];
+    },
+    game(computedSeletced, selected) {
+
       if (computedSeletced === selected) {
-        return `it's a tie`;
+        return "it's a tie"
       } else {
         if (
           (computedSeletced === "rock" && selected === "scissors") ||
           (computedSeletced === "paper" && selected === "rock") ||
           (computedSeletced === "scissors" && selected === "paper")
         ) {
-          return "computer won";
+          return "Computer won"
         }
-        return "player won";
+        return "You won!"
       }
-    },
-  },
-  methods: {
-    startGame () {
-      this.gamesPlayed = 1
-    },
-    play() {
-      if (!this.selected) {
-        return;
-      }
-      const computerChoiceIndex = Math.floor(Math.random() * choices.length);
-      this.computedSeletced = choices[computerChoiceIndex];
     },
   },
 };
