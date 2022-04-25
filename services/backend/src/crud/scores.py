@@ -23,3 +23,9 @@ async def update_score(user, score, current_user) -> ScoreOutSchema:
         return await ScoreOutSchema.from_queryset_single(Scores.get(id=user))
 
     raise HTTPException(status_code=403, detail=f"Not authorized to update")
+
+async def get_score(score_id) -> ScoreOutSchema:
+    return await ScoreOutSchema.from_queryset_single(Scores.get(id=score_id))    
+
+async def get_score_by_user(user_id) -> ScoreOutSchema:
+    return await ScoreOutSchema.from_queryset_single(Scores.get(user=user_id))        

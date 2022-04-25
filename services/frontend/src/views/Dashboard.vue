@@ -118,9 +118,12 @@ export default {
     },
     async recordResult (totalPoints) {      
       // i should add poinst
+      const userId = this.$store.getters.stateUser.id
+      const score = this.viewScoreByUser(userId)
+      console.log(score)
       try {
         let result = {
-          userid: this.$store.getters.stateUser.id,
+          userid: userId,
           points: totalPoints,
         };
         await this.updateNote(result);        
